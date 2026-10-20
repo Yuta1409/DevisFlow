@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Devis</title>
+  <link rel="stylesheet" href="/css/app.css">
+  <script src="/js/htmx.min.js"></script>
+  <script src="/js/json-enc.js"></script>
+  <script src="/js/app.js" defer></script>
+</head>
+<body hx-ext="json-enc" hx-headers='{"Accept": "text/html"}'>
+  <header class="top no-print">
+    <strong class="brand">Devis</strong>
+    <nav>
+      <a href="#" hx-get="/api/rpc/page_devis" hx-target="#main">Devis</a>
+      <a href="#" hx-get="/api/rpc/form_devis" hx-target="#main">Nouveau</a>
+      <a href="#" hx-get="/api/rpc/page_clients" hx-target="#main">Clients</a>
+    </nav>
+  </header>
+  <main id="main" hx-get="/api/rpc/page_devis" hx-trigger="load"></main>
+  <div id="toast" role="alert" aria-live="assertive"></div>
+</body>
+</html>
