@@ -14,19 +14,18 @@ down:          ## Arrête la stack (données conservées)
 logs:
 	docker compose logs -f --tail=50
 
-reset:         ## ATTENTION : supprime le volume (toutes les données) et rejoue db/init
+reset:         ## ATTENTION : supprime le volume (toutes les données) et rejoue db/init.sql
 	docker compose down -v
 	docker compose up -d
 
 psql:
 	docker compose exec db psql -U $(POSTGRES_USER) -d $(POSTGRES_DB)
 
-api:           ## Rejoue util + api sur la base en cours (sans perdre les données)
-	$(PSQL) < db/init/03_util.sql
-	$(PSQL) < db/init/04_api.sql
+api:           ## Recrée les schémas util + api (code SQL) sans toucher aux données
+	$(PSQL) --single-transaction -f /db/util.sql -f /db/api.sql
 
 seed:          ## Données de démo
-	$(PSQL) < db/seed_demo.sql
+	$(PSQL) -f /db/seed_demo.sql
 
 backup:        ## Sauvegarde dans backups/devis-AAAAMMJJ-HHMMSS.sql
 	@mkdir -p backups

@@ -8,11 +8,12 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-      AUTHENTICATOR_PASSWORD: ${AUTHENTICATOR_PASSWORD}
+      WEB_ANON_PASSWORD: ${WEB_ANON_PASSWORD}
       TZ: Europe/Paris
     volumes:
       - devis_pgdata:/var/lib/postgresql/data
-      - ./db/init:/docker-entrypoint-initdb.d:ro
+      - ./db:/db:ro                                             # scripts SQL (make api, make seed)
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro  # joué au 1er démarrage uniquement
     ports:
       - "127.0.0.1:${DB_PORT:-5433}:5432"
     healthcheck:
@@ -28,10 +29,9 @@ services:
       db:
         condition: service_healthy
     environment:
-      PGRST_DB_URI: postgres://authenticator:${AUTHENTICATOR_PASSWORD}@db:5432/${POSTGRES_DB}
+      PGRST_DB_URI: postgres://web_anon:${WEB_ANON_PASSWORD}@db:5432/${POSTGRES_DB}
       PGRST_DB_SCHEMAS: api
       PGRST_DB_ANON_ROLE: web_anon
-      PGRST_DB_CHANNEL_ENABLED: "true"
     # Pas de port publié : uniquement joignable par nginx (réseau Docker interne)
 
   web:
